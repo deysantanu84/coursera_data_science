@@ -1,0 +1,60 @@
+---
+title: "Developing Data Products - Week 4 Assignment"
+author: "Santanu Dey"
+date: "12 September 2017"
+output: slidy_presentation
+---
+
+# Shiny Application and Reproducible Pitch
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+ - This presentation is the first part of the assignment of week 4, ***Developing Data Products course from Coursera***(<https://www.coursera.org/learn/data-products>).
+ 
+ - The presentation contains information about the second part of the above mentioned assignment.
+
+## Application
+
+ - The second part of the mentioned assignment was to develop a web application. The application was named ***MPG Prediction***. An instance is up & running at <https://deysantanu84.shinyapps.io/DDP_Week4Assignment/>.
+ 
+ - In the application, a prediction model is generated, based on a car parameters dataset (HP, weight, gears, etc.). Then, a user can play freely with the UI values in order to simulate the parameters of an hypothetical car and be able to predict its MPG consumption.
+  
+## Dataset
+
+Dataset used by the application is the [Motor Trend Car Road Tests](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html) (from now on *'mtcars'*). The data was extracted from the ***1974 Motor Trend*** US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+
+Next, the dataset structure: 
+
+```{r cars, echo = TRUE}
+str(mtcars)
+```
+
+## Prediction
+
+A Random Forest prediction model is generated and trained using the *'mtcars'* dataset. The goal of this model is to predict the fuel consumption (***mpg*** variable) based on the rest of the variables:
+
+```{r echo = FALSE}
+suppressWarnings(suppressMessages(library(caret)))
+suppressWarnings(suppressMessages(library(randomForest)))
+set.seed(553311)
+```
+
+```{r echo = TRUE}
+customTrainControl <- trainControl(method = "cv", number = 10)
+carsRandomForestModelBuilder <- function() {
+    return(
+        train(
+            mpg ~ ., 
+            data = mtcars,
+            method = "rf",
+            trControl = customTrainControl
+        )
+    )
+}
+
+carsRandomForestModelBuilder()
+```
